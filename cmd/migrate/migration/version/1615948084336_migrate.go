@@ -12,7 +12,7 @@ import (
 
 func init() {
 	_, fileName, _, _ := runtime.Caller(0)
-	migration.Migrate.SetVersion(migration.GetFilename(fileName), _1615948084336Test)
+	migration.Migrate.SetVersion(migration.GetFilename(fileName), _1615948084336)
 }
 
 func _1615948084336Test(db *gorm.DB, version string) error {
@@ -23,6 +23,13 @@ func _1615948084336Test(db *gorm.DB, version string) error {
 			return err
 		}
 
+		return tx.Create(&common.Migration{
+			Version: version,
+		}).Error
+	})
+}
+func _1615948084336(db *gorm.DB, version string) error {
+	return db.Transaction(func(tx *gorm.DB) error {
 		return tx.Create(&common.Migration{
 			Version: version,
 		}).Error
